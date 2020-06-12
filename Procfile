@@ -1,1 +1,1 @@
-web: shellinaboxd --port=$PORT $ARGS_AND_FLAGS
+web: shellinaboxd --port=$PORT --disable-peer-check $ARGS_AND_FLAGS 

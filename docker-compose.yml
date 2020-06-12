@@ -1,0 +1,7 @@
+web:
+  build: .
+  command: 'shellinabox'
+  environment:
+    PORT: 4200
+  ports:
+    - '8080:4200'

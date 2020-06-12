@@ -1,23 +1,8 @@
 {
-  "name": "shell-kun",
-  "description": "Shellinabox on Heroku",
-  "keywords": [
-    "heroku",
-    "shellinabox",
-    "ssh"
-  ],
-  "website": "https://github.com/NNTin/shell-kun",
-  "logo": "https://i.imgur.com/11zvdoc.png",
-  "env": {
-     "ARGS_AND_FLAGS": {
-      "description": "See: https://github.com/shellinabox/shellinabox/wiki/Shell-In-A-Box-manual port number is already bound, see Procfile",
-      "value": "-d -t -s /:SSH",
-      "required": false
-    }
-  },
-  "buildpacks": [
-    {
-      "url": "https://github.com/heroku/heroku-buildpack-apt"
-    }
-  ]
+  "name": "sbox",
+  "description": "A barebones nginx installation using Docker",
+  "repository": "https://github.com/rjoonas/heroku-docker-nginx-example",
+  "logo": "https://upload.wikimedia.org/wikipedia/commons/c/c5/Nginx_logo.svg",
+  "keywords": ["nginx", "docker", "proxy"],
+  "stack": "container"
 }

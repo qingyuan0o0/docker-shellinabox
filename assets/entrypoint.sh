@@ -23,8 +23,6 @@ rm -rf /etc/localtime
 ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 date -R
 
-rm -f /etc/nginx/sites-enabled/default
-
 cat <<-EOF > /etc/nginx/sites-available/default
 server {
     listen ${PORT};
@@ -54,6 +52,8 @@ server {
     }
 }
 EOF
+rm -rf /etc/nginx/sites-enabled/default
+ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 if [ "$SIAB_SSL" != "true" ]; then
 	COMMAND+=" -t"

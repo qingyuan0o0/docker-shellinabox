@@ -8,7 +8,7 @@ hex()
 }
 
 echo "Preparing container .."
-COMMAND="/usr/bin/shellinaboxd --debug --no-beep --disable-peer-check -u shellinabox -g shellinabox -c /var/lib/shellinabox -p ${PORT} --user-css ${SIAB_USERCSS}"
+COMMAND="/usr/bin/shellinaboxd --debug --no-beep --disable-peer-check -u shellinabox -g shellinabox -c /var/lib/shellinabox -p ${SIAB_PORT} --user-css ${SIAB_USERCSS}"
 
 if [ "$SIAB_PKGS" != "none" ]; then
 	set +e
@@ -18,6 +18,42 @@ if [ "$SIAB_PKGS" != "none" ]; then
 	/bin/rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 	set -e
 fi
+
+rm -rf /etc/localtime
+ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+date -R
+
+rm -f /etc/nginx/sites-enabled/default
+
+cat <<-EOF > /etc/nginx/sites-available/default
+server {
+    listen ${PORT};
+    server_name _;
+    location / {
+        root   html;
+        index  index.html index.htm;
+    }
+    location /ssh {
+        proxy_set_header  Host  $http_host;
+        proxy_set_header  X-Real-IP  $remote_addr;
+        proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass  http://127.0.0.1:4200;
+    }
+    location /random {
+        if ($http_upgrade != "websocket") {
+            return 404;
+        }
+        proxy_redirect off;
+        proxy_pass http://127.0.0.1:5001;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+}
+EOF
 
 if [ "$SIAB_SSL" != "true" ]; then
 	COMMAND+=" -t"
